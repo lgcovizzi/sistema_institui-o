@@ -38,42 +38,45 @@
       </div>
 
       <div class="dashboard-grid">
-        <div class="institution-cards">
-          <div v-for="instituicao in instituicoes" :key="instituicao.id" class="institution-card">
-            <div class="institution-header">
-              <h3>{{ instituicao.nome_curto }}</h3>
-              <div class="actions">
-                <button @click="editarInstituicao(instituicao)" class="btn-edit">Editar</button>
-                <button @click="deleteInstituicao(instituicao.id)" class="btn-delete">Deletar</button>
+        <!-- Seção de Instituições -->
+        <div class="section">
+          <h2 class="section-title">Instituições Cadastradas</h2>
+          <div class="institution-cards">
+            <div v-for="instituicao in instituicoes" :key="instituicao.id" class="institution-card">
+              <div class="institution-header">
+                <h3>{{ instituicao.nome_curto }}</h3>
+                <div class="actions">
+                  <button @click="editarInstituicao(instituicao)" class="btn-edit">Editar</button>
+                  <button @click="deleteInstituicao(instituicao.id)" class="btn-delete">Deletar</button>
+                </div>
               </div>
-            </div>
-            <p><strong>Nome Completo:</strong> {{ instituicao.nome_longo }}</p>
-            
-            <div class="addresses-section">
-              <h4>Endereços Cadastrados</h4>
-              <div class="address-cards">
-                <div v-for="endereco in instituicao.enderecos" :key="endereco.id" class="address-card">
-                  <div class="address-header">
-                    <h5>{{ endereco.titulo }}</h5>
-                    <div class="actions">
-                      <button @click="editarEndereco(endereco)" class="btn-edit">Editar</button>
-                      <button @click="deleteEndereco(endereco.id)" class="btn-delete">Deletar</button>
+              <p><strong>Nome Completo:</strong> {{ instituicao.nome_longo }}</p>
+              
+              <div class="addresses-section">
+                <h4>Endereços Cadastrados</h4>
+                <div class="address-cards">
+                  <div v-for="endereco in instituicao.enderecos" :key="endereco.id" class="address-card">
+                    <div class="address-header">
+                      <h5>{{ endereco.titulo }}</h5>
+                      <div class="actions">
+                        <button @click="editarEndereco(endereco)" class="btn-edit">Editar</button>
+                        <button @click="deleteEndereco(endereco.id)" class="btn-delete">Deletar</button>
+                      </div>
                     </div>
-                  </div>
-                  <p>{{ endereco.cidade }} - {{ endereco.estado }}</p>
-                  
-                  <div class="departments-section">
-                    <h5>Departamentos Cadastrados</h5>
-                    <div class="department-cards">
-                      <div v-for="departamento in endereco.departamentos" :key="departamento.id" class="department-card">
-                        <div class="department-header">
-                          <h6>{{ departamento.nome }}</h6>
-                          <div class="actions">
-                            <button @click="editarDepartamento(departamento)" class="btn-edit">Editar</button>
-                            <button @click="deleteDepartamento(departamento.id)" class="btn-delete">Deletar</button>
+                    <p>{{ endereco.cidade }} - {{ endereco.estado }}</p>
+                    
+                    <div class="departments-section">
+                      <h5>Departamentos Cadastrados</h5>
+                      <div class="department-cards">
+                        <div v-for="departamento in endereco.departamentos" :key="departamento.id" class="department-card">
+                          <div class="department-header">
+                            <h6>{{ departamento.nome }}</h6>
+                            <div class="actions">
+                              <button @click="editarDepartamento(departamento)" class="btn-edit">Editar</button>
+                              <button @click="deleteDepartamento(departamento.id)" class="btn-delete">Deletar</button>
+                            </div>
                           </div>
                         </div>
-
                       </div>
                     </div>
                   </div>
@@ -82,6 +85,10 @@
             </div>
           </div>
         </div>
+
+
+
+
       </div>
     </div>
   </div>
@@ -103,6 +110,8 @@ export default {
   data() {
     return {
       instituicoes: [],
+      todosEnderecos: [],
+      todosDepartamentos: [],
       instituicaoEmEdicao: null,
       enderecoEmEdicao: null,
       departamentoEmEdicao: null,
@@ -111,6 +120,8 @@ export default {
   },
   mounted() {
     this.carregarInstituicoes();
+    this.carregarEnderecos();
+    this.carregarDepartamentos();
   },
   methods: {
     async carregarInstituicoes() {
@@ -121,25 +132,47 @@ export default {
         console.error('Erro ao carregar instituições:', error);
       }
     },
+    async carregarEnderecos() {
+      try {
+        const response = await api.get('/enderecos');
+        this.todosEnderecos = response.data;
+      } catch (error) {
+        console.error('Erro ao carregar endereços:', error);
+      }
+    },
+    async carregarDepartamentos() {
+      try {
+        const response = await api.get('/departamentos');
+        this.todosDepartamentos = response.data;
+      } catch (error) {
+        console.error('Erro ao carregar departamentos:', error);
+      }
+    },
     onInstituicaoCriada() {
       this.carregarInstituicoes();
     },
     onEnderecoCriado() {
       this.carregarInstituicoes();
+      this.carregarEnderecos();
     },
     onDepartamentoCriado() {
       this.carregarInstituicoes();
+      this.carregarDepartamentos();
     },
     onInstituicaoAtualizada() {
       this.carregarInstituicoes();
+      this.carregarEnderecos();
+      this.carregarDepartamentos();
       this.cancelarEdicao();
     },
     onEnderecoAtualizado() {
       this.carregarInstituicoes();
+      this.carregarEnderecos();
       this.cancelarEdicao();
     },
     onDepartamentoAtualizado() {
       this.carregarInstituicoes();
+      this.carregarDepartamentos();
       this.cancelarEdicao();
     },
     editarInstituicao(instituicao) {
@@ -162,6 +195,8 @@ export default {
         try {
           await api.delete(`/instituicoes/${id}`);
           this.carregarInstituicoes();
+          this.carregarEnderecos();
+          this.carregarDepartamentos();
         } catch (error) {
           console.error('Erro ao deletar instituição:', error);
         }
@@ -172,6 +207,8 @@ export default {
         try {
           await api.delete(`/enderecos/${id}`);
           this.carregarInstituicoes();
+          this.carregarEnderecos();
+          this.carregarDepartamentos();
         } catch (error) {
           console.error('Erro ao deletar endereço:', error);
         }
@@ -182,6 +219,7 @@ export default {
         try {
           await api.delete(`/departamentos/${id}`);
           this.carregarInstituicoes();
+          this.carregarDepartamentos();
         } catch (error) {
           console.error('Erro ao deletar departamento:', error);
         }

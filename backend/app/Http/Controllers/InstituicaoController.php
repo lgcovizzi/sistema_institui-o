@@ -9,7 +9,7 @@ class InstituicaoController extends Controller
 {
     public function index()
     {
-        return response()->json(Instituicao::all());
+        return response()->json(Instituicao::with(['enderecos.departamentos'])->get());
     }
 
     public function store(Request $request)

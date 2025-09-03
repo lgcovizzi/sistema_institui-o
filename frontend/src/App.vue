@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import Sidebar from '@/components/Sidebar.vue'
+import Toast from '@/components/Toast.vue'
 import { ref } from 'vue'
 
 const isSidebarOpen = ref(true)
@@ -12,6 +13,7 @@ const isSidebarOpen = ref(true)
     <main :class="{ 'sidebar-open': isSidebarOpen, 'sidebar-closed': !isSidebarOpen }">
       <RouterView />
     </main>
+    <Toast />
   </div>
 </template>
 
