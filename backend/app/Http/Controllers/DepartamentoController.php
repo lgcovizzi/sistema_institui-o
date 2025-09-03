@@ -9,51 +9,78 @@ class DepartamentoController extends Controller
 {
     public function index()
     {
-        return response()->json(Departamento::with(['instituicao', 'endereco'])->get());
+        $departamentos = Departamento::with(['instituicao', 'endereco'])
+            ->withCount('registros')
+            ->get();
+        
+        return response()->json($departamentos);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'instituicao_id' => 'required|exists:instituicoes,id',
+            'nome' => 'required|string|max:255',
+            'instituicao_id' => 'required|exists:instituicaos,id',
             'endereco_id' => 'required|exists:enderecos,id',
-            'nome' => 'required|string|max:255|unique:departamentos,nome,NULL,id,endereco_id,'.$request->endereco_id,
+        ]);
+
+        $request->validate([
+            'nome' => 'unique:departamentos,nome,NULL,id,endereco_id,' . $request->endereco_id,
         ]);
 
         $departamento = Departamento::create($request->all());
-
-        return response()->json($departamento->load(['instituicao', 'endereco']), 201);
+        
+        return response()->json($departamento, 201);
     }
 
     public function show(Departamento $departamento)
     {
-        return response()->json($departamento->load(['instituicao', 'endereco']));
-    }
-
-    public function byInstituicao($instituicao_id)
-    {
-        $departamentos = Departamento::where('instituicao_id', $instituicao_id)
-            ->with(['instituicao', 'endereco'])
-            ->get();
-        return response()->json($departamentos);
+        $departamento->load(['instituicao', 'endereco'])
+            ->loadCount('registros');
+        
+        return response()->json($departamento);
     }
 
     public function update(Request $request, Departamento $departamento)
     {
         $request->validate([
-            'instituicao_id' => 'sometimes|exists:instituicoes,id',
-            'endereco_id' => 'sometimes|exists:enderecos,id',
-            'nome' => 'sometimes|string|max:255|unique:departamentos,nome,'.$departamento->id.',id,endereco_id,'.$request->endereco_id,
+            'nome' => 'required|string|max:255',
+            'instituicao_id' => 'required|exists:instituicaos,id',
+            'endereco_id' => 'required|exists:enderecos,id',
+        ]);
+
+        $request->validate([
+            'nome' => 'unique:departamentos,nome,' . $departamento->id . ',id,endereco_id,' . $request->endereco_id,
         ]);
 
         $departamento->update($request->all());
-
-        return response()->json($departamento->load(['instituicao', 'endereco']));
+        
+        return response()->json($departamento);
     }
 
     public function destroy(Departamento $departamento)
     {
         $departamento->delete();
+        
         return response()->json(null, 204);
+    }
+
+    public function byEndereco($enderecoId)
+    {
+        $departamentos = Departamento::where('endereco_id', $enderecoId)
+            ->withCount('registros')
+            ->get();
+        
+        return response()->json($departamentos);
+    }
+
+    public function byInstituicao($instituicaoId)
+    {
+        $departamentos = Departamento::where('instituicao_id', $instituicaoId)
+            ->with(['endereco'])
+            ->withCount('registros')
+            ->get();
+        
+        return response()->json($departamentos);
     }
 }

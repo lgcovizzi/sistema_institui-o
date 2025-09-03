@@ -1,35 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import CadastroPage from "../views/CadastroPage.vue";
-import FuncionarioPage from "../views/FuncionarioPage.vue";
-import InstituicaoPage from '../views/InstituicaoPage.vue'
-import AboutView from '../views/AboutView.vue'
+import HomeView from '../views/HomeView.vue'
+import InstituicoesView from '../views/InstituicoesView.vue'
+import RegistrosView from '../views/RegistrosView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: '/cadastro'
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: AboutView,
-    },
-    {
-      path: '/cadastro',
-      name: 'cadastro',
-      component: CadastroPage,
-    },
-    {
-      path: '/funcionarios',
-      name: 'funcionarios',
-      component: FuncionarioPage,
+      name: 'home',
+      component: HomeView,
     },
     {
       path: '/instituicoes',
       name: 'instituicoes',
-      component: InstituicaoPage,
+      component: InstituicoesView,
+    },
+    {
+      path: '/cadastro',
+      name: 'cadastro',
+      component: () => import('../views/CadastroView.vue'),
+    },
+    {
+      path: '/registros',
+      name: 'registros',
+      component: () => import('../views/RegistrosView.vue'),
     },
   ],
 })

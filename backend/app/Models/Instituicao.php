@@ -9,12 +9,7 @@ class Instituicao extends Model
 {
     use HasFactory;
 
-    protected $table = 'instituicoes';
-
-    protected $fillable = [
-        'nome_curto',
-        'nome_longo',
-    ];
+    protected $fillable = ['nome_longo', 'nome_curto'];
 
     public function enderecos()
     {
@@ -23,11 +18,11 @@ class Instituicao extends Model
 
     public function departamentos()
     {
-        return $this->hasMany(Departamento::class);
+        return $this->hasManyThrough(Departamento::class, Endereco::class);
     }
 
-    public function funcionarios()
+    public function registros()
     {
-        return $this->hasMany(Funcionario::class);
+        return $this->hasMany(Registro::class);
     }
 }

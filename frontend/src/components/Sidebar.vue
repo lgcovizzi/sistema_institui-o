@@ -1,97 +1,71 @@
 <template>
-  <div :class="['sidebar', { 'open': isOpen, 'closed': !isOpen }]">
-    <div class="sidebar-header">
-      <button class="toggle-btn" @click="$emit('toggle')">
-        <i class="icon">{{ isOpen ? '☰' : '☰' }}</i>
-      </button>
-      <h2 v-if="isOpen" class="sidebar-title">Sistema de Instituição</h2>
-    </div>
+  <div class="sidebar" :class="{ collapsed: isCollapsed }">
+    <button class="toggle-btn" @click="toggleSidebar">
+      <span v-if="!isCollapsed">☰</span>
+      <span v-else>☰</span>
+    </button>
     
-    <nav class="sidebar-nav">
-      <router-link to="/" class="nav-item">
-        <i class="nav-icon">🏠</i>
-        <span v-if="isOpen" class="nav-text">Home</span>
+    <nav class="nav-menu">
+      <router-link to="/" class="nav-item" title="Home">
+        <span class="icon">🏠</span>
+        <span class="text" v-if="!isCollapsed">Home</span>
       </router-link>
       
-      <router-link to="/instituicoes" class="nav-item">
-        <i class="nav-icon">🏢</i>
-        <span v-if="isOpen" class="nav-text">Cadastro Instituições</span>
+      <router-link to="/cadastro" class="nav-item" title="Cadastro">
+        <span class="icon">📝</span>
+        <span class="text" v-if="!isCollapsed">Cadastro</span>
       </router-link>
       
-      <router-link to="/funcionarios" class="nav-item">
-        <i class="nav-icon">👥</i>
-        <span v-if="isOpen" class="nav-text">Registro</span>
+      <router-link to="/registros" class="nav-item" title="Cadastro de Funcionários">
+        <span class="icon">👤</span>
+        <span class="text" v-if="!isCollapsed">Funcionários</span>
       </router-link>
     </nav>
   </div>
 </template>
 
 <script setup lang="ts">
-interface Props {
-  isOpen: boolean
-}
+import { ref } from 'vue'
 
-interface Emits {
-  (e: 'toggle'): void
-}
+const isCollapsed = ref(false)
 
-defineProps<Props>()
-defineEmits<Emits>()
+const toggleSidebar = () => {
+  isCollapsed.value = !isCollapsed.value
+}
 </script>
 
 <style scoped>
 .sidebar {
-  background: #2c3e50;
-  color: white;
-  transition: width 0.3s ease;
   position: fixed;
-  height: 100vh;
   left: 0;
   top: 0;
+  height: 100vh;
+  width: 200px;
+  background: #2c3e50;
+  transition: width 0.3s ease;
   z-index: 1000;
   display: flex;
   flex-direction: column;
 }
 
-.sidebar.open {
-  width: 250px;
-}
-
-.sidebar.closed {
+.sidebar.collapsed {
   width: 60px;
-}
-
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  border-bottom: 1px solid #34495e;
 }
 
 .toggle-btn {
   background: none;
   border: none;
   color: white;
-  font-size: 20px;
+  padding: 15px;
   cursor: pointer;
-  padding: 5px;
-  border-radius: 4px;
-  transition: background-color 0.3s;
+  font-size: 18px;
+  width: 100%;
+  text-align: left;
 }
 
-.toggle-btn:hover {
-  background-color: #34495e;
-}
-
-.sidebar-title {
-  margin-left: 15px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.sidebar-nav {
+.nav-menu {
   flex: 1;
-  padding: 20px 0;
+  padding: 10px 0;
 }
 
 .nav-item {
@@ -100,7 +74,7 @@ defineEmits<Emits>()
   padding: 12px 15px;
   color: white;
   text-decoration: none;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s;
   white-space: nowrap;
 }
 
@@ -112,18 +86,18 @@ defineEmits<Emits>()
   background-color: #3498db;
 }
 
-.nav-icon {
-  font-size: 18px;
-  width: 24px;
+.icon {
+  font-size: 20px;
+  margin-right: 10px;
+  min-width: 24px;
   text-align: center;
 }
 
-.nav-text {
-  margin-left: 15px;
-  font-size: 14px;
+.sidebar.collapsed .icon {
+  margin-right: 0;
 }
 
-.sidebar.closed .nav-item {
-  justify-content: center;
+.text {
+  font-size: 14px;
 }
 </style>

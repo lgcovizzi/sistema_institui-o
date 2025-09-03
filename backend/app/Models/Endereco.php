@@ -9,14 +9,7 @@ class Endereco extends Model
 {
     use HasFactory;
 
-    protected $table = 'enderecos';
-
-    protected $fillable = [
-        'instituicao_id',
-        'titulo',
-        'cidade',
-        'estado',
-    ];
+    protected $fillable = ['titulo', 'cidade', 'estado', 'instituicao_id'];
 
     public function instituicao()
     {
@@ -28,8 +21,8 @@ class Endereco extends Model
         return $this->hasMany(Departamento::class);
     }
 
-    public function funcionarios()
+    public function registros()
     {
-        return $this->hasMany(Funcionario::class);
+        return $this->hasMany(Registro::class);
     }
 }

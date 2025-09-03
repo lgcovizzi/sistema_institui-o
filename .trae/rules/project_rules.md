@@ -1,5 +1,6 @@
 # Sistema de Instituição - Documentação Atualizada
-
+vc está em um ambiente dockerizado, faça tudo dentro do container.
+nginx use o padrão do laravel
 ## Visão Geral
 Sistema completo de gerenciamento de instituições, endereços, departamentos e funcionários, desenvolvido com Laravel (backend), Vue.js (frontend) e MariaDB.
 
@@ -27,17 +28,27 @@ Sistema completo de gerenciamento de instituições, endereços, departamentos e
 - **Relacionamento**: Departamento pertence a uma instituição e endereço específico
 - **Interface**: Seleção dinâmica de instituição e endereço
 
-### 4. Cadastro de Funcionários
-- **Campos obrigatórios**: Nome, Instituição, Endereço, Departamento
-- **Campos opcionais**: Cargo, Horário de trabalho
+uma instituição pode ter multiplos endereços e cada endereço pode ter multiplos departamentos
+o endereço pertence a uma instituição eo endereço deve ser único na instituição
+
+porém quando houver outra instituição com nome diferente essa instiuição pode ter o mesmo nome de endereço. 
+não pode haver dois endereços com o mesmo nome na mesma instituição.
+cada endereço pode ter apenas um departamento com o mesmo nome.
+cada departamento pode ter apenas um endereço com o mesmo nome.
+
+
+
+### 4. Registro
+- **Campos obrigatórios**: Nome, 
+- **Campos opcionais**: Instituição, Endereço, Departamento
 - **Interface**: Seleção em cascata (instituição → endereço → departamento)
 
 ## Layout e Interface
 
 ### Estrutura de Páginas
 1. **Home**: Dashboard inicial
-2. **Cadastro Instituições**: CRUD completo de instituições
-3. **Cadastro Funcionários**: CRUD completo de funcionários
+2. **Cadastro Cadastro**: CRUD completo de instituições, endereços e departamentos
+3. **Cadastro Registro**: CRUD completo com campos nome, instituição, endereço, departamento
 
 ### Barra Lateral Retrátil
 - **Posição**: Esquerda da tela
@@ -48,31 +59,17 @@ Sistema completo de gerenciamento de instituições, endereços, departamentos e
 ### Cards de Exibição
 
 #### Instituições Cadastradas
-- Nome da instituição
-- Lista de endereços (interior)
-- Lista de departamentos (interior dos endereços)
-- Botões: Editar ✏️, Deletar ✖️
 
-#### Endereços Cadastrados
-- Título do endereço
-- Cidade e estado
-- Instituição vinculada
-- Botões: Editar ✏️, Deletar ✖️
+mostra um card para cada instituição este card contem um cabeçalho com o nome da istituição, um botão de editar e um botão de deletar.
+dentro do card mostra um cabeçalho com o nome do endereço, um botão de editar e um botão de deletar.
+dentro do cabeçalho do endereço mostra um cabeçalho com o nome do departamento, um botão de editar e um botão de deletar.
+dentro do cabeçalho do departamento mostra um cabeçalho com o nome do departamento, um botão de editar e um botão de deletar.
 
-#### Departamentos Cadastrados
-- Nome do departamento
-- Instituição vinculada
-- Endereço vinculado
-- Botões: Editar ✏️, Deletar ✖️
+do lado direito do cabeçalho do instituição mostra botão em uma caixa azul que conta quantas vezes a instituição foi utilizda no registro
+do lado direito do cabeçalho do endereço mostra botão em uma caixa azul que conta quantas vezes o endereço foi utilizdo no registro
+do lado direito do cabeçalho do departamento mostra botão em uma caixa azul que conta quantas vezes o departamento foi utilizdo no registro
 
-#### Funcionários Cadastrados
-- Nome do funcionário
-- Instituição
-- Endereço
-- Departamento
-- Cargo (quando preenchido)
-- Horário de trabalho (quando preenchido)
-- Botões: Editar ✏️, Deletar ✖️
+a pagina de 
 
 ## Melhorias de Layout Implementadas
 
@@ -89,18 +86,23 @@ Sistema completo de gerenciamento de instituições, endereços, departamentos e
 ## Regras de Negócio
 
 ### Unicidade de Dados
-- Nome curto da instituição: único no sistema
-- Nome longo da instituição: único no sistema
-- Título do endereço: único por instituição
-- Nome do departamento: único por endereço
+em uma instituição não pode haver dois endereços com o mesmo nome.
+em um endereço não pode haver dois departamentos com o mesmo nome.
 
-### Relacionamentos
-- **Instituição** → **Endereços** (1:N)
-- **Instituição** → **Departamentos** (1:N)
-- **Endereço** → **Departamentos** (1:N)
-- **Instituição** → **Funcionários** (1:N)
-- **Endereço** → **Funcionários** (1:N)
-- **Departamento** → **Funcionários** (1:N)
+contagem de registros
+ é feito uma contagem no card de instituição de quantas vezes a instituição aparece no registo
+ é feito uma contagem no card de endereço de quantas vezes o endereço aparece no registo
+ é feito uma contagem no card de departamento de quantas vezes o departamento aparece no registo
+
+toast
+quando houver um erro de validação um toast deve aparecer na tela mostrando o erro.
+quando houver um sucesso um toast deve aparecer na tela mostrando o sucesso.
+quando houver um erro de validação no registro um toast deve aparecer na tela mostrando o erro.
+quando houver um sucesso no registro um toast deve aparecer na tela mostrando o sucesso.
+quando houver um erro de validação no cadastro um toast deve aparecer na tela mostrando o erro.
+quando houver um sucesso no cadastro um toast deve aparecer na tela mostrando o sucesso.
+quando houver um erro de validação no registro um toast deve aparecer na tela mostrando o erro.
+quando houver um sucesso no registro um toast deve aparecer na tela mostrando o sucesso.
 
 ## Comandos Docker
 

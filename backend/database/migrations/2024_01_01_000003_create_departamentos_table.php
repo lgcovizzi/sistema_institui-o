@@ -10,12 +10,11 @@ return new class extends Migration
     {
         Schema::create('departamentos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('instituicao_id')->constrained('instituicoes')->onDelete('cascade');
-            $table->foreignId('endereco_id')->constrained('enderecos')->onDelete('cascade');
             $table->string('nome');
-            $table->timestamps();
-            
+            $table->foreignId('instituicao_id')->constrained('instituicaos')->onDelete('cascade');
+            $table->foreignId('endereco_id')->constrained('enderecos')->onDelete('cascade');
             $table->unique(['nome', 'endereco_id']);
+            $table->timestamps();
         });
     }
 

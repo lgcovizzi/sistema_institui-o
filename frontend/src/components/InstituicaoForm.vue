@@ -1,179 +1,157 @@
 <template>
   <div class="form-container">
-    <h2>{{ editMode ? 'Editar Instituição' : 'Cadastrar Instituição' }}</h2>
+    <h2>{{ isEdit ? 'Editar' : 'Nova' }} Instituição</h2>
     <form @submit.prevent="submitForm">
       <div class="form-group">
-        <label for="nome_curto">Nome Curto:</label>
+        <label for="nome_longo">Nome Completo *</label>
         <input
+          id="nome_longo"
+          v-model="form.nome_longo"
           type="text"
-          id="nome_curto"
-          v-model="instituicao.nome_curto"
           required
-          maxlength="50"
-          class="form-control"
+          maxlength="255"
         />
       </div>
 
       <div class="form-group">
-        <label for="nome_longo">Nome Longo:</label>
+        <label for="nome_curto">Nome Curto *</label>
         <input
+          id="nome_curto"
+          v-model="form.nome_curto"
           type="text"
-          id="nome_longo"
-          v-model="instituicao.nome_longo"
           required
-          maxlength="255"
-          class="form-control"
+          maxlength="50"
         />
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">{{ editMode ? 'Atualizar' : 'Cadastrar' }}</button>
-        <button v-if="editMode" type="button" @click="cancelEdit" class="btn btn-secondary">Cancelar</button>
+        <button type="submit" class="btn-primary" :disabled="loading">
+          {{ loading ? 'Salvando...' : 'Salvar' }}
+        </button>
+        <button type="button" class="btn-secondary" @click="$emit('cancel')">
+          Cancelar
+        </button>
       </div>
     </form>
   </div>
 </template>
 
-<script>
-import api from '@/services/api';
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import type { Instituicao } from '@/types'
 
-export default {
-  name: 'InstituicaoForm',
-  props: {
-    instituicaoEdit: {
-      type: Object,
-      default: null
+const props = defineProps<{
+  instituicao?: Instituicao
+  loading?: boolean
+}>()
+
+const emit = defineEmits<{
+  submit: [data: Partial<Instituicao>]
+  cancel: []
+}>()
+
+const isEdit = ref(false)
+const form = ref({
+  nome_longo: '',
+  nome_curto: '',
+})
+
+watch(() => props.instituicao, (newInstituicao) => {
+  if (newInstituicao) {
+    isEdit.value = true
+    form.value = {
+      nome_longo: newInstituicao.nome_longo,
+      nome_curto: newInstituicao.nome_curto,
     }
-  },
-  inject: ['toast'],
-  data() {
-    return {
-      instituicao: {
-        nome_curto: '',
-        nome_longo: ''
-      },
-      editMode: false,
-      instituicaoId: null
-    };
-  },
-  watch: {
-    instituicaoEdit: {
-      handler(newVal) {
-        if (newVal) {
-          this.instituicao = { ...newVal };
-          this.editMode = true;
-          this.instituicaoId = newVal.id;
-        } else {
-          this.resetForm();
-        }
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    async submitForm() {
-      try {
-        let response;
-        if (this.editMode) {
-          response = await api.put(`/instituicoes/${this.instituicaoId}`, this.instituicao);
-          this.$emit('instituicao-atualizada', response.data);
-          this.toast.success('Instituição atualizada com sucesso!');
-        } else {
-          response = await api.post('/instituicoes', this.instituicao);
-          this.$emit('instituicao-criada', response.data);
-          this.toast.success('Instituição cadastrada com sucesso!');
-        }
-        this.resetForm();
-        // Recarregar a página silenciosamente
-        window.location.reload();
-      } catch (error) {
-        console.error('Erro ao salvar instituição:', error);
-        
-        // Tratamento específico para erros de validação (422)
-        if (error.response && error.response.status === 422) {
-          const errors = error.response.data.errors;
-          
-          if (errors.nome_curto && errors.nome_curto.includes('already been taken')) {
-            this.toast.error('Erro: O nome curto já está em uso. Por favor, escolha outro nome.');
-          } else if (errors.nome_longo && errors.nome_longo.includes('already been taken')) {
-            this.toast.error('Erro: O nome longo já está em uso. Por favor, escolha outro nome.');
-          } else {
-            // Exibe mensagens de erro de validação genéricas
-            const errorMessages = Object.values(errors).flat();
-            errorMessages.forEach(message => {
-              this.toast.error(`Erro de validação: ${message}`);
-            });
-          }
-        } else {
-          // Mensagem genérica para outros tipos de erro
-          this.toast.error('Erro ao salvar instituição. Verifique os dados e tente novamente.');
-        }
-      }
-    },
-    resetForm() {
-      this.instituicao = {
-        nome_curto: '',
-        nome_longo: ''
-      };
-      this.editMode = false;
-      this.instituicaoId = null;
-      this.$emit('cancel-edit');
-    },
-    cancelEdit() {
-      this.resetForm();
+  } else {
+    isEdit.value = false
+    form.value = {
+      nome_longo: '',
+      nome_curto: '',
     }
   }
-};
+}, { immediate: true })
+
+const submitForm = () => {
+  emit('submit', form.value)
+}
 </script>
 
 <style scoped>
+.form-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.form-container h2 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
 .form-group {
   margin-bottom: 15px;
 }
 
-label {
+.form-group label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
+  color: #2c3e50;
 }
 
-.form-control {
+.form-group input {
   width: 100%;
-  padding: 8px;
+  padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 14px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3498db;
 }
 
 .form-actions {
   display: flex;
   gap: 10px;
-  margin-top: 20px;
-}
-
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
+  justify-content: flex-end;
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background: #3498db;
   color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
-.btn-primary:hover {
-  background-color: #0056b3;
+.btn-primary:hover:not(:disabled) {
+  background: #2980b9;
+}
+
+.btn-primary:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
-  background-color: #6c757d;
+  background: #95a5a6;
   color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .btn-secondary:hover {
-  background-color: #545b62;
+  background: #7f8c8d;
 }
 </style>

@@ -9,13 +9,7 @@ class Departamento extends Model
 {
     use HasFactory;
 
-    protected $table = 'departamentos';
-
-    protected $fillable = [
-        'instituicao_id',
-        'endereco_id',
-        'nome',
-    ];
+    protected $fillable = ['nome', 'instituicao_id', 'endereco_id'];
 
     public function instituicao()
     {
@@ -27,8 +21,8 @@ class Departamento extends Model
         return $this->belongsTo(Endereco::class);
     }
 
-    public function funcionarios()
+    public function registros()
     {
-        return $this->hasMany(Funcionario::class);
+        return $this->hasMany(Registro::class);
     }
 }
