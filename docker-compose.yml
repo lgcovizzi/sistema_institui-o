@@ -4,8 +4,6 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: laravel_backend
-    ports:
-      - "8000:8000"
     volumes:
       - ./backend:/var/www/html
     depends_on:
@@ -52,7 +50,7 @@ services:
     image: nginx:alpine
     container_name: nginx_server
     ports:
-      - "80:80"
+      - "8000:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:

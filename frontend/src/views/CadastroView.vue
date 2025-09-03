@@ -57,35 +57,18 @@ const { instituicoes, loading, error } = storeToRefs(instituicaoStore);
 
 const formLoading = ref(false);
 
-onMounted(async () => {
-  await loadInstituicoes();
+onMounted(() => {
+  instituicaoStore.fetchInstituicoes();
 });
-
-const loadInstituicoes = async () => {
-  try {
-    await instituicaoStore.fetchInstituicoes();
-    for (const instituicao of instituicoes.value) {
-      await enderecoStore.fetchEnderecos(instituicao.id);
-      instituicao.enderecos = enderecoStore.enderecos;
-      
-      for (const endereco of instituicao.enderecos || []) {
-        await departamentoStore.fetchDepartamentos(endereco.id);
-        endereco.departamentos = departamentoStore.departamentos;
-      }
-    }
-  } catch (error: any) {
-    showError('Erro ao carregar dados');
-  }
-};
 
 const saveInstituicao = async (data: Partial<Instituicao>) => {
   formLoading.value = true;
   try {
     await instituicaoStore.createInstituicao(data as any);
     showSuccess('Instituição criada com sucesso');
-    await loadInstituicoes();
-  } catch (error: any) {
-    showError(error.message || 'Erro ao salvar instituição');
+    await instituicaoStore.fetchInstituicoes();
+  } catch (err: any) {
+    showError(err.message || 'Erro ao salvar instituição');
   } finally {
     formLoading.value = false;
   }
@@ -95,9 +78,9 @@ const saveEndereco = async (data: Partial<Endereco>) => {
   try {
     await enderecoStore.createEndereco(data as any);
     showSuccess('Endereço criado com sucesso');
-    await loadInstituicoes();
-  } catch (error: any) {
-    showError(error.message || 'Erro ao salvar endereço');
+    await instituicaoStore.fetchInstituicoes();
+  } catch (err: any) {
+    showError(err.message || 'Erro ao salvar endereço');
   }
 };
 
@@ -105,9 +88,9 @@ const saveDepartamento = async (data: Partial<Departamento>) => {
   try {
     await departamentoStore.createDepartamento(data as any);
     showSuccess('Departamento criado com sucesso');
-    await loadInstituicoes();
-  } catch (error: any) {
-    showError(error.message || 'Erro ao salvar departamento');
+    await instituicaoStore.fetchInstituicoes();
+  } catch (err: any) {
+    showError(err.message || 'Erro ao salvar departamento');
   }
 };
 
@@ -118,7 +101,6 @@ const editEndereco = (endereco: Endereco) => console.log('Edit endereco', endere
 const deleteEndereco = (endereco: Endereco) => console.log('Delete endereco', endereco);
 const editDepartamento = (departamento: Departamento) => console.log('Edit departamento', departamento);
 const deleteDepartamento = (departamento: Departamento) => console.log('Delete departamento', departamento);
-
 </script>
 
 <style scoped>

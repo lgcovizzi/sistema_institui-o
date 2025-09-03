@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import InstituicoesView from '../views/InstituicoesView.vue'
 import RegistrosView from '../views/RegistrosView.vue'
 
 const router = createRouter({
@@ -10,11 +9,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-    },
-    {
-      path: '/instituicoes',
-      name: 'instituicoes',
-      component: InstituicoesView,
     },
     {
       path: '/cadastro',

@@ -6,15 +6,23 @@ use App\Models\Instituicao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Log;
+
 class InstituicaoController extends Controller
 {
     public function index()
     {
-        $instituicoes = Instituicao::with(['enderecos.departamentos'])
-            ->withCount('registros')
-            ->get();
-        
-        return response()->json($instituicoes);
+        Log::info('Acessando o método index de InstituicaoController');
+        try {
+            $instituicoes = Instituicao::with(['enderecos.departamentos'])
+                ->withCount('registros')
+                ->get();
+            Log::info('Instituições carregadas com sucesso');
+            return response()->json($instituicoes);
+        } catch (\Exception $e) {
+            Log::error('Erro ao carregar instituições: ' . $e->getMessage());
+            return response()->json(['error' => 'Erro interno do servidor'], 500);
+        }
     }
 
     public function store(Request $request)
