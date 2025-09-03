@@ -31,27 +31,12 @@
         <div class="stat-icon">👤</div>
         <div class="stat-content">
           <h3>{{ registrosCount }}</h3>
-          <p>Funcionários</p>
+          <p>Usuários</p>
         </div>
       </div>
     </div>
 
-    <div class="quick-actions">
-      <h2>Ações Rápidas</h2>
-      <div class="actions-grid">
-        <router-link to="/instituicoes" class="action-card">
-          <div class="action-icon">📄</div>
-          <h3>Gerenciar Instituições</h3>
-          <p>Cadastrar e gerenciar instituições, endereços e departamentos</p>
-        </router-link>
-        
-        <router-link to="/registros" class="action-card">
-          <div class="action-icon">👤</div>
-          <h3>Gerenciar Funcionários</h3>
-          <p>Cadastrar e gerenciar funcionários com vínculos institucionais</p>
-        </router-link>
-      </div>
-    </div>
+
   </div>
 </template>
 
