@@ -11,7 +11,7 @@ interface Toast {
 const toasts = ref<Toast[]>([])
 
 // Funções globais para gerenciar toasts
-const addToast = (type: Toast['type'], message: string, duration = 5000) => {
+const addToast = (type: Toast['type'], message: string, duration = 8000) => {
   const id = Date.now() + Math.random()
   const toast: Toast = {
     id,

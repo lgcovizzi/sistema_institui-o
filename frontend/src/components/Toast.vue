@@ -20,6 +20,12 @@
           <button class="toast-close" @click="removeToast(toast.id)">
             ×
           </button>
+          <div class="toast-progress">
+            <div 
+              :class="['toast-progress-bar', `toast-progress-${toast.type}`]"
+              :style="{ animationDuration: `${toast.duration}ms` }"
+            ></div>
+          </div>
         </div>
       </transition-group>
     </div>
@@ -63,6 +69,8 @@ const getTitle = (type: string) => {
   max-width: 400px;
   pointer-events: auto;
   border-left: 4px solid;
+  position: relative;
+  overflow: hidden;
 }
 
 .toast-success {
@@ -149,27 +157,69 @@ const getTitle = (type: string) => {
   color: #374151;
 }
 
+/* Barra de progresso */
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.toast-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform-origin: left;
+  animation: toast-progress linear forwards;
+}
+
+.toast-progress-success {
+  background-color: #10b981;
+}
+
+.toast-progress-error {
+  background-color: #ef4444;
+}
+
+.toast-progress-warning {
+  background-color: #f59e0b;
+}
+
+.toast-progress-info {
+  background-color: #3b82f6;
+}
+
+@keyframes toast-progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
 /* Animações */
 .toast-enter-active {
-  transition: all 0.3s ease-out;
+  transition: all 0.4s ease-out;
 }
 
 .toast-leave-active {
-  transition: all 0.3s ease-in;
+  transition: all 0.4s ease-in;
 }
 
 .toast-enter-from {
-  transform: translateX(100%);
+  transform: translateX(100%) scale(0.8);
   opacity: 0;
 }
 
 .toast-leave-to {
-  transform: translateX(100%);
+  transform: translateX(100%) scale(0.8);
   opacity: 0;
 }
 
 .toast-move {
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease;
 }
 
 @media (max-width: 640px) {

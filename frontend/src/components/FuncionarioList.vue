@@ -4,7 +4,6 @@
     <div class="cards-container">
       <div v-for="funcionario in funcionarios" :key="funcionario.id" class="card">
         <div class="card-header">
-          <h3>{{ funcionario.nome }}</h3>
           <div class="card-actions">
             <button @click="editFuncionario(funcionario)" class="btn-edit">Editar</button>
             <button @click="deleteFuncionario(funcionario.id)" class="btn-delete">Deletar</button>
@@ -20,12 +19,6 @@
           </p>
           <p v-if="funcionario.departamento">
             <strong>Departamento:</strong> {{ funcionario.departamento.nome }}
-          </p>
-          <p v-if="funcionario.cargo">
-            <strong>Cargo:</strong> {{ funcionario.cargo }}
-          </p>
-          <p v-if="funcionario.horario_trabalho">
-            <strong>Horário de Trabalho:</strong> {{ funcionario.horario_trabalho }}
           </p>
           <p v-if="funcionario.email">
             <strong>Email:</strong> {{ funcionario.email }}

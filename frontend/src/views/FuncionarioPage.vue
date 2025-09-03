@@ -29,7 +29,6 @@
         <div class="funcionario-cards">
           <div v-for="funcionario in funcionarios" :key="funcionario.id" class="funcionario-card">
             <div class="funcionario-header">
-              <h3>{{ funcionario.nome }}</h3>
               <div class="actions">
                 <button @click="editarFuncionario(funcionario)" class="btn-edit">Editar</button>
                 <button @click="deleteFuncionario(funcionario.id)" class="btn-delete">Deletar</button>
@@ -39,8 +38,6 @@
               <p><strong>Instituição:</strong> {{ funcionario.instituicao?.nome_curto || 'N/A' }}</p>
               <p><strong>Endereço:</strong> {{ funcionario.endereco?.titulo || 'N/A' }} - {{ funcionario.endereco?.cidade || 'N/A' }} - {{ funcionario.endereco?.estado || 'N/A' }}</p>
               <p><strong>Departamento:</strong> {{ funcionario.departamento?.nome || 'N/A' }}</p>
-              <p><strong>Cargo:</strong> {{ funcionario.cargo || 'N/A' }}</p>
-              <p><strong>Horário:</strong> {{ funcionario.horario_trabalho || 'N/A' }}</p>
             </div>
           </div>
         </div>

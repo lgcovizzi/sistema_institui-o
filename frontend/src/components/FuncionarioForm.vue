@@ -62,38 +62,7 @@
         </select>
       </div>
 
-      <div class="form-group">
-        <label for="nome">Nome:</label>
-        <input
-          type="text"
-          id="nome"
-          v-model="funcionario.nome"
-          required
-          class="form-control"
-        />
-      </div>
 
-
-
-      <div class="form-group">
-        <label for="cargo">Cargo:</label>
-        <input
-          type="text"
-          id="cargo"
-          v-model="funcionario.cargo"
-          class="form-control"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="horario_trabalho">Horário de Trabalho:</label>
-        <input
-          type="text"
-          id="horario_trabalho"
-          v-model="funcionario.horario_trabalho"
-          class="form-control"
-        />
-      </div>
 
 
 
@@ -122,10 +91,7 @@ export default {
       funcionario: {
         instituicao_id: '',
         endereco_id: '',
-        departamento_id: '',
-        nome: '',
-        cargo: '',
-        horario_trabalho: ''
+        departamento_id: ''
       },
       instituicoes: [],
       enderecos: [],
