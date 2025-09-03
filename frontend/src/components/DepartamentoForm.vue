@@ -104,6 +104,10 @@ watch(() => props.editId, async (newEditId) => {
     selectedInstituicao.value = null;
   }
 });
+
+const submitForm = () => {
+  emit('submit', departamento.value);
+};
 </script>
 
 <style scoped>

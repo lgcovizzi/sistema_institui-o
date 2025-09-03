@@ -16,9 +16,9 @@
         <span class="text" v-if="!isCollapsed">Cadastro</span>
       </router-link>
       
-      <router-link to="/registros" class="nav-item" title="Cadastro de Funcionários">
+      <router-link to="/registros" class="nav-item" title="Registro">
         <span class="icon">👤</span>
-        <span class="text" v-if="!isCollapsed">Funcionários</span>
+        <span class="text" v-if="!isCollapsed">Registro</span>
       </router-link>
     </nav>
   </div>

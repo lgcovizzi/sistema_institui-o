@@ -1,10 +1,12 @@
 <template>
   <div class="registros-view">
     <div class="header">
-      <h1>Cadastro de Funcionários</h1>
-      <button @click="showForm = true" class="btn-add">
-        + Novo Funcionário
-      </button>
+      <h1>Registrar</h1>
+      <div class="header-actions">
+        <button @click="showForm = true" class="btn-add">
+          Adicionar
+        </button>
+      </div>
     </div>
 
     <div v-if="loading" class="loading">
@@ -135,15 +137,16 @@ const closeForm = () => {
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 30px;
 }
 
 .header h1 {
-  margin: 0;
+  margin: 0 0 15px 0;
   color: #2c3e50;
+}
+
+.header-actions {
+  margin-top: 10px;
 }
 
 .btn-add {

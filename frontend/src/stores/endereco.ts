@@ -14,7 +14,7 @@ export const useEnderecoStore = defineStore('endereco', {
       this.loading = true
       try {
         const url = instituicaoId 
-          ? `/enderecos/by-instituicao/${instituicaoId}`
+          ? `/enderecos/instituicao/${instituicaoId}`
           : '/enderecos'
         const response = await api.get(url)
         this.enderecos = response.data

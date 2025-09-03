@@ -29,6 +29,7 @@ import { ref, onMounted, watch } from 'vue';
 import { useInstituicaoStore } from '@/stores/instituicao';
 import { useEnderecoStore } from '@/stores/endereco';
 import type { Endereco } from '@/types';
+import { storeToRefs } from 'pinia';
 
 const props = defineProps<{
   endereco?: Endereco
@@ -92,7 +93,9 @@ watch(() => props.editId, async (newEditId) => {
   }
 });
 
-import { storeToRefs } from 'pinia';
+const submitForm = () => {
+  emit('submit', endereco.value);
+};
 </script>
 
 <style scoped>

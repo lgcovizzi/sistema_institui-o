@@ -15,9 +15,9 @@ export const useDepartamentoStore = defineStore('departamento', {
       let url = '/departamentos'
       
       if (enderecoId) {
-        url = `/departamentos/by-endereco/${enderecoId}`
+        url = `/departamentos/endereco/${enderecoId}`
       } else if (instituicaoId) {
-        url = `/departamentos/by-instituicao/${instituicaoId}`
+        url = `/departamentos/instituicao/${instituicaoId}`
       }
 
       try {
