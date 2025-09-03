@@ -321,7 +321,50 @@ export default {
   margin-right: 8px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 2768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: none;
+    padding: 16px 4px;
+  }
+  .sidebar.collapsed {
+    transform: translateX(-100%);
+  }
+  .main-content {
+    margin-left: 0;
+    padding: 8px 0;
+  }
+  .main-content.expanded {
+    margin-left: 0;
+  }
+  .forms-section {
+    flex-direction: column;
+    gap: 12px;
+    max-width: 100%;
+    align-items: stretch;
+  }
+  .dashboard-grid {
+    gap: 12px;
+    max-width: 100%;
+    align-items: stretch;
+  }
+  .funcionario-cards {
+    gap: 12px;
+    max-width: 100%;
+    align-items: stretch;
+  }
+  .funcionario-card {
+    padding: 12px;
+    border-radius: 8px;
+    max-width: 100%;
+  }
+  .funcionario-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+@media (max-width: 2768px) {
   .sidebar {
     transform: translateX(-100%);
     box-shadow: none;
