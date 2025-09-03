@@ -74,6 +74,7 @@ export default {
       default: null
     }
   },
+  inject: ['toast'],
   data() {
     return {
       endereco: {
@@ -111,6 +112,7 @@ export default {
         this.instituicoes = response.data;
       } catch (error) {
         console.error('Erro ao carregar instituições:', error);
+        this.toast.error('Erro ao carregar instituições.');
       }
     },
     async submitForm() {
@@ -119,16 +121,35 @@ export default {
         if (this.editMode) {
           response = await api.put(`/enderecos/${this.enderecoId}`, this.endereco);
           this.$emit('endereco-atualizado', response.data);
-          alert('Endereço atualizado com sucesso!');
+          this.toast.success('Endereço atualizado com sucesso!');
         } else {
           response = await api.post('/enderecos', this.endereco);
           this.$emit('endereco-criado', response.data);
-          alert('Endereço cadastrado com sucesso!');
+          this.toast.success('Endereço cadastrado com sucesso!');
         }
         this.resetForm();
+        // Recarregar a página silenciosamente
+        window.location.reload();
       } catch (error) {
         console.error('Erro ao salvar endereço:', error);
-        alert('Erro ao salvar endereço. Verifique os dados e tente novamente.');
+        
+        // Tratamento específico para erros de validação (422)
+        if (error.response && error.response.status === 422) {
+          const errors = error.response.data.errors;
+          
+          if (errors.titulo && errors.titulo.includes('already been taken')) {
+            this.toast.error('Erro: Este título de endereço já está em uso para esta instituição. Por favor, escolha outro título.');
+          } else {
+            // Exibe mensagens de erro de validação genéricas
+            const errorMessages = Object.values(errors).flat();
+            errorMessages.forEach(message => {
+              this.toast.error(`Erro de validação: ${message}`);
+            });
+          }
+        } else {
+          // Mensagem genérica para outros tipos de erro
+          this.toast.error('Erro ao salvar endereço. Verifique os dados e tente novamente.');
+        }
       }
     },
     resetForm() {

@@ -13,7 +13,7 @@
     
     <div class="main-content" :class="{ expanded: sidebarCollapsed }">
       <div class="header">
-        <h1>Sistema de Instituição</h1>
+        <h1>Sistema de Cadastro Institucional</h1>
       </div>
       
       <div class="welcome-section">
@@ -50,6 +50,11 @@ export default {
   data() {
     return {
       sidebarCollapsed: false
+    }
+  },
+  methods: {
+    toggleSidebar() {
+      this.sidebarCollapsed = !this.sidebarCollapsed;
     }
   }
 }
@@ -106,6 +111,7 @@ export default {
   border-radius: 8px;
   font-size: 1em;
   transition: background-color 0.3s;
+  position: relative;
 }
 
 .sidebar nav ul li a:hover {
@@ -139,14 +145,20 @@ export default {
   padding: 32px;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  width: 80%;
+  max-width: 1200px;
+}
+
+.header h1 {
   font-size: 1.6em;
   font-weight: 700;
   letter-spacing: 1px;
+  margin: 0;
 }
 
 .welcome-section {
-  width: 100%;
-  max-width: 900px;
+  width: 80%;
+  max-width: 1200px;
   display: flex;
   justify-content: center;
 }
@@ -196,9 +208,6 @@ export default {
   font-size: 0.9em;
 }
 
-.sidebar nav ul li a {
-  position: relative;
-}
 .sidebar nav ul li:nth-child(1) a::before {
   content: '\1F3E0';
   margin-right: 8px;
@@ -224,9 +233,18 @@ export default {
   .main-content {
     margin-left: 0;
     padding: 8px 0;
+    width: 100%;
   }
   .main-content.expanded {
     margin-left: 0;
+    width: 100%;
+  }
+  .header {
+    width: 90%;
+    padding: 24px;
+  }
+  .welcome-section {
+    width: 90%;
   }
   .welcome-card {
     padding: 24px;

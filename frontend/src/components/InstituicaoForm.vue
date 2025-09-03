@@ -45,6 +45,7 @@ export default {
       default: null
     }
   },
+  inject: ['toast'],
   data() {
     return {
       instituicao: {
@@ -76,16 +77,37 @@ export default {
         if (this.editMode) {
           response = await api.put(`/instituicoes/${this.instituicaoId}`, this.instituicao);
           this.$emit('instituicao-atualizada', response.data);
-          alert('Instituição atualizada com sucesso!');
+          this.toast.success('Instituição atualizada com sucesso!');
         } else {
           response = await api.post('/instituicoes', this.instituicao);
           this.$emit('instituicao-criada', response.data);
-          alert('Instituição cadastrada com sucesso!');
+          this.toast.success('Instituição cadastrada com sucesso!');
         }
         this.resetForm();
+        // Recarregar a página silenciosamente
+        window.location.reload();
       } catch (error) {
         console.error('Erro ao salvar instituição:', error);
-        alert('Erro ao salvar instituição. Verifique os dados e tente novamente.');
+        
+        // Tratamento específico para erros de validação (422)
+        if (error.response && error.response.status === 422) {
+          const errors = error.response.data.errors;
+          
+          if (errors.nome_curto && errors.nome_curto.includes('already been taken')) {
+            this.toast.error('Erro: O nome curto já está em uso. Por favor, escolha outro nome.');
+          } else if (errors.nome_longo && errors.nome_longo.includes('already been taken')) {
+            this.toast.error('Erro: O nome longo já está em uso. Por favor, escolha outro nome.');
+          } else {
+            // Exibe mensagens de erro de validação genéricas
+            const errorMessages = Object.values(errors).flat();
+            errorMessages.forEach(message => {
+              this.toast.error(`Erro de validação: ${message}`);
+            });
+          }
+        } else {
+          // Mensagem genérica para outros tipos de erro
+          this.toast.error('Erro ao salvar instituição. Verifique os dados e tente novamente.');
+        }
       }
     },
     resetForm() {

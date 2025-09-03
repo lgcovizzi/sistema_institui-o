@@ -116,6 +116,7 @@ export default {
       default: null
     }
   },
+  inject: ['toast'],
   data() {
     return {
       funcionario: {
@@ -158,6 +159,7 @@ export default {
         this.instituicoes = response.data;
       } catch (error) {
         console.error('Erro ao carregar instituições:', error);
+        this.toast.error('Erro ao carregar instituições.');
       }
     },
     async loadEnderecos() {
@@ -171,6 +173,7 @@ export default {
         this.enderecos = response.data;
       } catch (error) {
         console.error('Erro ao carregar endereços:', error);
+        this.toast.error('Erro ao carregar endereços.');
       }
     },
     async loadDepartamentos() {
@@ -184,6 +187,7 @@ export default {
         this.departamentos = response.data;
       } catch (error) {
         console.error('Erro ao carregar departamentos:', error);
+        this.toast.error('Erro ao carregar departamentos.');
       }
     },
     async loadEnderecosEDepartamentos() {
@@ -196,16 +200,31 @@ export default {
         if (this.editMode) {
           response = await api.put(`/funcionarios/${this.funcionarioId}`, this.funcionario);
           this.$emit('funcionario-atualizado', response.data);
-          alert('Funcionário atualizado com sucesso!');
+          this.toast.success('Funcionário atualizado com sucesso!');
         } else {
           response = await api.post('/funcionarios', this.funcionario);
           this.$emit('funcionario-criado', response.data);
-          alert('Funcionário cadastrado com sucesso!');
+          this.toast.success('Funcionário cadastrado com sucesso!');
         }
         this.resetForm();
+        // Recarregar a página silenciosamente
+        window.location.reload();
       } catch (error) {
         console.error('Erro ao salvar funcionário:', error);
-        alert('Erro ao salvar funcionário. Verifique os dados e tente novamente.');
+        
+        // Tratamento específico para erros de validação (422)
+        if (error.response && error.response.status === 422) {
+          const errors = error.response.data.errors;
+          
+          // Exibe mensagens de erro de validação
+          const errorMessages = Object.values(errors).flat();
+          errorMessages.forEach(message => {
+            this.toast.error(`Erro de validação: ${message}`);
+          });
+        } else {
+          // Mensagem genérica para outros tipos de erro
+          this.toast.error('Erro ao salvar funcionário. Verifique os dados e tente novamente.');
+        }
       }
     },
     resetForm() {
