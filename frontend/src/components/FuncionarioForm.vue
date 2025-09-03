@@ -197,10 +197,7 @@ export default {
       this.funcionario = {
         instituicao_id: '',
         endereco_id: '',
-        departamento_id: '',
-        nome: '',
-        cargo: '',
-        horario_trabalho: ''
+        departamento_id: ''
       };
       this.enderecos = [];
       this.departamentos = [];

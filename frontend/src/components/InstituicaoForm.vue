@@ -127,8 +127,6 @@ export default {
 </script>
 
 <style scoped>
-
-
 .form-group {
   margin-bottom: 15px;
 }

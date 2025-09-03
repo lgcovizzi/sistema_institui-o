@@ -171,8 +171,6 @@ export default {
 </script>
 
 <style scoped>
-
-
 .form-group {
   margin-bottom: 15px;
 }
@@ -192,10 +190,10 @@ label {
 }
 
 .form-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-  }
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
 
   .btn {
     padding: 10px 20px;
