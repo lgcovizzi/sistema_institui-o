@@ -575,44 +575,150 @@ export default {
     align-items: stretch;
   }
   .institution-card {
-    padding: 12px;
-    border-radius: 8px;
-    max-width: 100%;
+    padding: 20px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f8fafc 80%, #e3eafc 100%);
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
+    border-left: 6px solid #3498db;
+    margin-bottom: 24px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
+  }
+  .institution-card:hover {
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.16);
+    transform: translateY(-2px) scale(1.01);
   }
   .addresses-section {
-    padding-left: 8px;
-    border-left-width: 2px;
+    padding-left: 24px;
+    border-left: 4px solid #2ecc71;
+    margin-top: 18px;
   }
   .address-cards {
-    gap: 8px;
+    gap: 16px;
     max-width: 100%;
     align-items: stretch;
+    margin-top: 10px;
   }
   .address-card {
-    padding: 8px;
-    border-radius: 6px;
-    max-width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f8f9fa 80%, #eafaf1 100%);
+    box-shadow: 0 2px 12px rgba(46, 204, 113, 0.08);
+    border-left: 5px solid #2ecc71;
+    margin-bottom: 12px;
+    position: relative;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .address-card:hover {
+    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.16);
+    transform: translateY(-1px) scale(1.01);
   }
   .departments-section {
-    padding-left: 6px;
-    border-left-width: 2px;
+    padding-left: 18px;
+    border-left: 3px solid #e74c3c;
+    margin-top: 12px;
   }
   .department-cards {
-    gap: 6px;
+    gap: 10px;
     max-width: 100%;
     align-items: stretch;
+    margin-top: 8px;
   }
   .department-card {
-    padding: 6px;
-    border-radius: 4px;
-    max-width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #fff 80%, #fbeaea 100%);
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.08);
+    border-left: 5px solid #e74c3c;
+    margin-bottom: 8px;
+    position: relative;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .department-card:hover {
+    box-shadow: 0 4px 16px rgba(231, 76, 60, 0.16);
+    transform: translateY(-1px) scale(1.01);
   }
   .institution-header,
   .address-header,
   .department-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+  }
+  .institution-header h3, .address-header h5, .department-header h6 {
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .actions button {
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 6px 14px;
+    margin-left: 8px;
+    box-shadow: 0 1px 2px rgba(44,62,80,0.04);
+    transition: background 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .btn-edit {
+    background: #f9c846;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+  }
+  .btn-edit:hover {
+    background: #f7b731;
+    transform: scale(1.05);
+  }
+  .btn-delete {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+  }
+  .btn-delete:hover {
+    background: #c0392b;
+    transform: scale(1.05);
+  }
+  .addresses-section h4,
+  .departments-section h5 {
+    font-weight: 600;
+    color: #3498db;
+    margin-bottom: 8px;
+    margin-top: 0;
+  }
+  .address-header h5 {
+    color: #2ecc71;
+  }
+  .department-header h6 {
+    color: #e74c3c;
+  }
+  .institution-header h3::before {
+    content: "🏢 ";
+    font-size: 18px;
+  }
+  .address-header h5::before {
+    content: "📍 ";
+    font-size: 16px;
+  }
+  .department-header h6::before {
+    content: "🏢 ";
+    font-size: 15px;
+  }
+  .actions .btn-edit::before {
+    content: "\1F58C ";
+    font-size: 15px;
+    margin-right: 2px;
+  }
+  .actions .btn-delete::before {
+    content: "\2716 ";
+    font-size: 15px;
+    margin-right: 2px;
   }
 }
+
 </style>

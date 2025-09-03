@@ -5,7 +5,9 @@
         <div
           v-for="toast in toasts"
           :key="toast.id"
-          :class="['toast', `toast-${toast.type}`]"
+          :class="['toast', `toast-${toast.type}`, { 'toast-paused': toast.isPaused }]"
+          @mouseenter="pauseToast(toast.id)"
+          @mouseleave="resumeToast(toast.id)"
         >
           <div class="toast-icon">
             <span v-if="toast.type === 'success'">✓</span>
@@ -35,7 +37,7 @@
 <script setup lang="ts">
 import { useToast } from '@/composables/useToast'
 
-const { toasts, removeToast } = useToast()
+const { toasts, removeToast, pauseToast, resumeToast } = useToast()
 
 const getTitle = (type: string) => {
   const titles: Record<string, string> = {
@@ -71,6 +73,17 @@ const getTitle = (type: string) => {
   border-left: 4px solid;
   position: relative;
   overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.toast:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.toast-paused .toast-progress-bar {
+  animation-play-state: paused;
 }
 
 .toast-success {
@@ -150,11 +163,14 @@ const getTitle = (type: string) => {
   justify-content: center;
   border-radius: 4px;
   transition: all 0.2s;
+  opacity: 0.7;
 }
 
 .toast-close:hover {
   background-color: #f3f4f6;
   color: #374151;
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 /* Barra de progresso */
@@ -222,16 +238,53 @@ const getTitle = (type: string) => {
   transition: transform 0.4s ease;
 }
 
-@media (max-width: 640px) {
+/* Responsividade */
+@media (max-width: 768px) {
   .toast-container {
     top: 10px;
     right: 10px;
     left: 10px;
+    width: auto;
   }
   
   .toast {
     min-width: auto;
     max-width: none;
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 12px;
+  }
+  
+  .toast-title {
+    font-size: 13px;
+  }
+  
+  .toast-message {
+    font-size: 12px;
+  }
+  
+  .toast-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    margin-right: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toast-container {
+    top: 5px;
+    right: 5px;
+    left: 5px;
+  }
+  
+  .toast {
+    padding: 10px;
+    border-radius: 6px;
+  }
+  
+  .toast-progress {
+    height: 2px;
   }
 }
 </style>
