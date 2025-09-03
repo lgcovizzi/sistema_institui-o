@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <h2>{{ editMode ? 'Editar Funcionário' : 'Cadastrar Funcionário' }}</h2>
+    <h2>{{ editMode ? 'Editar Funcionário' : 'Registro' }}</h2>
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="instituicao">Instituição:</label>
@@ -62,7 +62,17 @@
         </select>
       </div>
 
-
+      <div class="form-group">
+        <label for="nome">Nome:</label>
+        <input
+          id="nome"
+          v-model="funcionario.nome"
+          type="text"
+          required
+          class="form-control"
+          placeholder="Digite o nome"
+        >
+      </div>
 
 
 
@@ -91,7 +101,8 @@ export default {
       funcionario: {
         instituicao_id: '',
         endereco_id: '',
-        departamento_id: ''
+        departamento_id: '',
+        nome: ''
       },
       instituicoes: [],
       enderecos: [],
@@ -197,7 +208,8 @@ export default {
       this.funcionario = {
         instituicao_id: '',
         endereco_id: '',
-        departamento_id: ''
+        departamento_id: '',
+        nome: ''
       };
       this.enderecos = [];
       this.departamentos = [];

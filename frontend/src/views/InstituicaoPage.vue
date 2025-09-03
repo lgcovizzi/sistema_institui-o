@@ -6,7 +6,7 @@
         <ul>
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/cadastro">Cadastro Instituições</router-link></li>
-          <li><router-link to="/funcionarios">Cadastro Funcionários</router-link></li>
+          <li><router-link to="/funcionarios">Registro</router-link></li>
         </ul>
       </nav>
     </div>

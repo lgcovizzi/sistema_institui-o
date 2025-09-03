@@ -6,15 +6,12 @@
         <ul>
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/cadastro">Cadastro Instituições</router-link></li>
-          <li><router-link to="/funcionarios">Cadastro Funcionários</router-link></li>
+          <li><router-link to="/funcionarios">Registro</router-link></li>
         </ul>
       </nav>
     </div>
     
     <div class="main-content" :class="{ expanded: sidebarCollapsed }">
-      <div class="header">
-        <h1>Cadastro de Funcionários</h1>
-      </div>
       
       <div class="forms-section">
         <FuncionarioForm 
@@ -35,6 +32,7 @@
               </div>
             </div>
             <div class="funcionario-details">
+              <p><strong>Nome:</strong> {{ funcionario.nome || 'N/A' }}</p>
               <p><strong>Instituição:</strong> {{ funcionario.instituicao?.nome_curto || 'N/A' }}</p>
               <p><strong>Endereço:</strong> {{ funcionario.endereco?.titulo || 'N/A' }} - {{ funcionario.endereco?.cidade || 'N/A' }} - {{ funcionario.endereco?.estado || 'N/A' }}</p>
               <p><strong>Departamento:</strong> {{ funcionario.departamento?.nome || 'N/A' }}</p>

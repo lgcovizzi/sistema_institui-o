@@ -20,7 +20,7 @@
       
       <router-link to="/funcionarios" class="nav-item">
         <i class="nav-icon">👥</i>
-        <span v-if="isOpen" class="nav-text">Cadastro Funcionários</span>
+        <span v-if="isOpen" class="nav-text">Registro</span>
       </router-link>
     </nav>
   </div>
