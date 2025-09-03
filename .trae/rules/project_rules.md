@@ -1,30 +1,133 @@
-reinicie o docker compose
-docker contendo backend com laravel o frontend com vuejs e banco de dados mariadb
-sempre rode em docker 
-uma página web com um formulário para cadastrar uma instiuição, a instituição só tem um nome longo e um nome curto, a instuição não tem os campos de CNPJ,Telefone,Email
+# Sistema de Instituição - Documentação Atualizada
 
-um formulário para cadastrar um endereço, precisa selecionar uma instituição já cadastrada, cada instituição pode ter multiplos endereços, 
-um formulário para cadastrar o departamento, para cadastrar um departamento precisa selecionar uma instituição, e tb precisa selecionar um endereço
+## Visão Geral
+Sistema completo de gerenciamento de instituições, endereços, departamentos e funcionários, desenvolvido com Laravel (backend), Vue.js (frontend) e MariaDB.
 
+## Tecnologias Utilizadas
+- **Backend**: Laravel 11
+- **Frontend**: Vue.js 3 + TypeScript
+- **Banco de Dados**: MariaDB
+- **Containerização**: Docker & Docker Compose
+- **Estilização**: CSS puro com layout responsivo unificado
 
-uma segunda página com um formulário para cadastrar um funcionário, 
-para cadastrar um funcionário precisa selecionar uma instituição (selecionando o nome curto), e tb precisa selecionar um endereço, 
-e tb precisa selecionar um departamento, e como opcional, adicionar manualmente o cargo e o horário de trabalho
-O endereço é composto por um titulo, uma cidade, um estado não há Logradouro, Número, Bairro.
-faça o backend com laravel, e o frontend com vuejs, e o banco de dados com mariadb
+## Funcionalidades Implementadas
 
-na página de cadastro, em Sistema de Instituição, é mostrado card com o nome da instituição, lista de endereços e departamentos e um botão de deletar e editar.
-na página de cadastro, em Endereço, é mostrado card com o titulo do endereço, a cidade, o estado e um botão de deletar e editar.
-na página de cadastro, em Departamento, é mostrado card com o nome do departamento, a instituição e um botão de deletar e editar.
-na página de cadastro, em Funcionário, é mostrado card com o nome do funcionário, a instituição, o endereço, o departamento, o cargo e o horário de trabalho e um botão de deletar e editar.
-coloque no padrão de uma barra lateral retratil, Sistema de Instituição, com as opções de Home Cadastro Instituições Cadastro Funcionários
-O CARD Departamentos Cadastrados está no interior do card Endereços Cadastrados e o card Endereços Cadastrados está no interior do Instituições Cadastradas
+### 1. Cadastro de Instituições
+- **Campos**: Nome longo (único), Nome curto (único)
+- **Exclusões**: Sem CNPJ, telefone ou email
+- **Interface**: Formulário simples com validação de unicidade
 
-a página tem o layout de um dasboard,
-a barra lateral deve ter icones a esquerda e ser retrátil
-o nome curto da instituição deve ser único
-o nome longo da instituição deve ser único
-o titulo do endereço na instituição deve ser único
-o nome do departamento no endereço deve ser único
+### 2. Cadastro de Endereços
+- **Campos**: Título (único por instituição), Cidade, Estado
+- **Relacionamento**: Múltiplos endereços por instituição
+- **Interface**: Seleção de instituição via dropdown
 
-reinicie o banco de dados como se fosse a primeira vez
+### 3. Cadastro de Departamentos
+- **Campos**: Nome (único por endereço), Instituição, Endereço
+- **Relacionamento**: Departamento pertence a uma instituição e endereço específico
+- **Interface**: Seleção dinâmica de instituição e endereço
+
+### 4. Cadastro de Funcionários
+- **Campos obrigatórios**: Nome, Instituição, Endereço, Departamento
+- **Campos opcionais**: Cargo, Horário de trabalho
+- **Interface**: Seleção em cascata (instituição → endereço → departamento)
+
+## Layout e Interface
+
+### Estrutura de Páginas
+1. **Home**: Dashboard inicial
+2. **Cadastro Instituições**: CRUD completo de instituições
+3. **Cadastro Funcionários**: CRUD completo de funcionários
+
+### Barra Lateral Retrátil
+- **Posição**: Esquerda da tela
+- **Ícones**: Home 🏠, Cadastro Instituições 📄, Cadastro Funcionários 👤
+- **Comportamento**: Retrátil com animação suave
+- **Estilo**: Consistente em todas as resoluções
+
+### Cards de Exibição
+
+#### Instituições Cadastradas
+- Nome da instituição
+- Lista de endereços (interior)
+- Lista de departamentos (interior dos endereços)
+- Botões: Editar ✏️, Deletar ✖️
+
+#### Endereços Cadastrados
+- Título do endereço
+- Cidade e estado
+- Instituição vinculada
+- Botões: Editar ✏️, Deletar ✖️
+
+#### Departamentos Cadastrados
+- Nome do departamento
+- Instituição vinculada
+- Endereço vinculado
+- Botões: Editar ✏️, Deletar ✖️
+
+#### Funcionários Cadastrados
+- Nome do funcionário
+- Instituição
+- Endereço
+- Departamento
+- Cargo (quando preenchido)
+- Horário de trabalho (quando preenchido)
+- Botões: Editar ✏️, Deletar ✖️
+
+## Melhorias de Layout Implementadas
+
+### CSS Unificado
+- **Remoção**: Todas as regras @media para tamanhos específicos
+- **Padronização**: Mesmo layout para 1023px e qualquer tamanho
+- **Consistência**: Elementos mantêm proporções independente da resolução
+
+### Responsividade Simplificada
+- Layout flexível que se adapta naturalmente
+- Sem breakpoints complexos
+- Experiência consistente em desktop, tablet e mobile
+
+## Regras de Negócio
+
+### Unicidade de Dados
+- Nome curto da instituição: único no sistema
+- Nome longo da instituição: único no sistema
+- Título do endereço: único por instituição
+- Nome do departamento: único por endereço
+
+### Relacionamentos
+- **Instituição** → **Endereços** (1:N)
+- **Instituição** → **Departamentos** (1:N)
+- **Endereço** → **Departamentos** (1:N)
+- **Instituição** → **Funcionários** (1:N)
+- **Endereço** → **Funcionários** (1:N)
+- **Departamento** → **Funcionários** (1:N)
+
+## Comandos Docker
+
+### Inicialização do Sistema
+```bash
+docker-compose down && docker-compose up --build -d
+```
+
+### Acesso aos Serviços
+- **Frontend**: http://localhost:5173
+- **Backend**: http://localhost:8000
+- **Banco de Dados**: localhost:3306
+
+## Estrutura de Diretórios
+```
+sistema_instituição/
+├── backend/          # Laravel backend
+├── frontend/         # Vue.js frontend
+├── docker-compose.yml
+└── .trae/rules/
+    └── project_rules.md
+```
+
+## Status do Projeto
+✅ Sistema completamente funcional
+✅ Todas as funcionalidades implementadas
+✅ Layout padronizado para qualquer resolução
+✅ Docker Compose configurado e operacional
+✅ Banco de dados reinicializado
+✅ Validações de unicidade implementadas
