@@ -16,20 +16,20 @@
       <div class="form-content">
         <InstituicaoForm
           v-if="activeTab === 'instituicao'"
-          :edit-id="editingId"
-          @success="handleSuccess('instituicao')"
+          :editId="editingId"
+          @submit="handleInstituicaoSubmit"
           @cancel="handleCancel"
         />
         <EnderecoForm
           v-if="activeTab === 'endereco'"
-          :edit-id="editingId"
-          @success="handleSuccess('endereco')"
+          :editId="editingId"
+          @submit="handleEnderecoSubmit"
           @cancel="handleCancel"
         />
         <DepartamentoForm
           v-if="activeTab === 'departamento'"
-          :edit-id="editingId"
-          @success="handleSuccess('departamento')"
+          :editId="editingId"
+          @submit="handleDepartamentoSubmit"
           @cancel="handleCancel"
         />
       </div>
@@ -103,7 +103,11 @@ import { useAppToast } from '@/composables/useToast';
 import InstituicaoForm from '@/components/InstituicaoForm.vue';
 import EnderecoForm from '@/components/EnderecoForm.vue';
 import DepartamentoForm from '@/components/DepartamentoForm.vue';
-import type { Instituicao, Endereco, Departamento } from '@/types';
+
+interface Tab {
+  id: string;
+  label: string;
+}
 
 const instituicaoStore = useInstituicaoStore();
 const enderecoStore = useEnderecoStore();
@@ -113,10 +117,10 @@ const { showSuccess, showError } = useAppToast();
 
 const { instituicoes, loading, error } = storeToRefs(instituicaoStore);
 
-const activeTab = ref('instituicao');
+const activeTab = ref<string>('instituicao');
 const editingId = ref<number | null>(null);
 
-const tabs = [
+const tabs: Tab[] = [
   { id: 'instituicao', label: 'Instituição' },
   { id: 'endereco', label: 'Endereço' },
   { id: 'departamento', label: 'Departamento' }
@@ -157,21 +161,69 @@ const getDepartamentosComContadores = (enderecoId: number) => {
     }));
 };
 
-const handleSuccess = (type: string) => {
-  showSuccess(`${type.charAt(0).toUpperCase() + type.slice(1)} salvo com sucesso`);
-  editingId.value = null;
-  activeTab.value = type;
-  // Recarregar todos os dados
-  Promise.all([
-    instituicaoStore.fetchInstituicoes(),
-    enderecoStore.fetchEnderecos(),
-    departamentoStore.fetchDepartamentos(),
-    registroStore.fetchRegistros()
-  ]);
+const handleInstituicaoSubmit = async (data: any) => {
+  console.log('Recebido no handler:', data)
+  try {
+    if (editingId.value) {
+      await instituicaoStore.updateInstituicao(editingId.value, data);
+    } else {
+      await instituicaoStore.createInstituicao(data);
+    }
+    showSuccess(`Instituição salva com sucesso`);
+    editingId.value = null;
+    // Recarregar todos os dados
+    await Promise.all([
+      instituicaoStore.fetchInstituicoes(),
+      enderecoStore.fetchEnderecos(),
+      departamentoStore.fetchDepartamentos(),
+      registroStore.fetchRegistros()
+    ]);
+  } catch (err: any) {
+    console.error('Erro ao salvar instituição:', err)
+    showError(err.message || 'Erro ao salvar instituição');
+  }
 };
 
-const handleCancel = () => {
-  editingId.value = null;
+const handleEnderecoSubmit = async (data: any) => {
+  try {
+    if (editingId.value) {
+      await enderecoStore.updateEndereco(editingId.value, data);
+    } else {
+      await enderecoStore.createEndereco(data);
+    }
+    showSuccess(`Endereço salvo com sucesso`);
+    editingId.value = null;
+    // Recarregar todos os dados
+    await Promise.all([
+      instituicaoStore.fetchInstituicoes(),
+      enderecoStore.fetchEnderecos(),
+      departamentoStore.fetchDepartamentos(),
+      registroStore.fetchRegistros()
+    ]);
+  } catch (err: any) {
+    showError(err.message || 'Erro ao salvar endereço');
+  }
+};
+
+const handleDepartamentoSubmit = async (data: any) => {
+  try {
+    if (editingId.value) {
+      await departamentoStore.updateDepartamento(editingId.value, data);
+    } else {
+      await departamentoStore.createDepartamento(data);
+    }
+    showSuccess(`Departamento salvo com sucesso`);
+    editingId.value = null;
+    // Recarregar todos os dados
+    await Promise.all([
+      instituicaoStore.fetchInstituicoes(),
+      enderecoStore.fetchEnderecos(),
+      departamentoStore.fetchDepartamentos(),
+      registroStore.fetchRegistros()
+    ]);
+  } catch (err: any) {
+    showError(err.message || 'Erro ao salvar departamento');
+  }
 };
 
 const editItem = (type: string, id: number) => {
@@ -180,32 +232,38 @@ const editItem = (type: string, id: number) => {
 };
 
 const deleteItem = async (type: string, id: number) => {
-  const confirmDelete = confirm(`Tem certeza que deseja deletar este ${type}?`);
-  if (!confirmDelete) return;
-
   try {
-    switch (type) {
-      case 'instituicao':
-        await instituicaoStore.deleteInstituicao(id);
-        break;
-      case 'endereco':
-        await enderecoStore.deleteEndereco(id);
-        break;
-      case 'departamento':
-        await departamentoStore.deleteDepartamento(id);
-        break;
+    if (confirm('Tem certeza que deseja deletar este item?')) {
+      switch (type) {
+        case 'instituicao':
+          await instituicaoStore.deleteInstituicao(id);
+          showSuccess('Instituição deletada com sucesso');
+          break;
+        case 'endereco':
+          await enderecoStore.deleteEndereco(id);
+          showSuccess('Endereço deletado com sucesso');
+          break;
+        case 'departamento':
+          await departamentoStore.deleteDepartamento(id);
+          showSuccess('Departamento deletado com sucesso');
+          break;
+      }
+      
+      // Recarregar todos os dados
+      await Promise.all([
+        instituicaoStore.fetchInstituicoes(),
+        enderecoStore.fetchEnderecos(),
+        departamentoStore.fetchDepartamentos(),
+        registroStore.fetchRegistros()
+      ]);
     }
-    showSuccess(`${type.charAt(0).toUpperCase() + type.slice(1)} deletado com sucesso`);
-    // Recarregar dados
-    await Promise.all([
-      instituicaoStore.fetchInstituicoes(),
-      enderecoStore.fetchEnderecos(),
-      departamentoStore.fetchDepartamentos(),
-      registroStore.fetchRegistros()
-    ]);
   } catch (err: any) {
-    showError(err.message || `Erro ao deletar ${type}`);
+    showError(err.message || 'Erro ao deletar item');
   }
+};
+
+const handleCancel = () => {
+  editingId.value = null;
 };
 </script>
 

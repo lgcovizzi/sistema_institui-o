@@ -59,8 +59,22 @@ class InstituicaoController extends Controller
 
     public function destroy(Instituicao $instituicao)
     {
-        $instituicao->delete();
-        
-        return response()->json(null, 204);
+        try {
+            Log::info('Tentando deletar instituição: ' . $instituicao->id);
+            
+            // Check if there are any related records
+            $enderecosCount = $instituicao->enderecos()->count();
+            $registrosCount = $instituicao->registros()->count();
+            
+            Log::info("Instituição {$instituicao->id} tem {$enderecosCount} endereços e {$registrosCount} registros");
+            
+            $instituicao->delete();
+            
+            Log::info('Instituição deletada com sucesso: ' . $instituicao->id);
+            return response()->json(null, 204);
+        } catch (\Exception $e) {
+            Log::error('Erro ao deletar instituição: ' . $e->getMessage());
+            return response()->json(['error' => 'Erro ao deletar instituição: ' . $e->getMessage()], 500);
+        }
     }
 }

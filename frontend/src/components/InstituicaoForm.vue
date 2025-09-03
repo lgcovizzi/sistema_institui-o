@@ -37,12 +37,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
+import { useInstituicaoStore } from '@/stores/instituicao'
 import type { Instituicao } from '@/types'
 
 const props = defineProps<{
   instituicao?: Instituicao
   loading?: boolean
+  editId?: number | null
 }>()
 
 const emit = defineEmits<{
@@ -50,10 +52,25 @@ const emit = defineEmits<{
   cancel: []
 }>()
 
+const instituicaoStore = useInstituicaoStore()
 const isEdit = ref(false)
 const form = ref({
   nome_longo: '',
   nome_curto: '',
+})
+
+onMounted(async () => {
+  if (props.editId) {
+    await instituicaoStore.fetchInstituicoes()
+    const instituicao = instituicaoStore.instituicoes.find(i => i.id === props.editId)
+    if (instituicao) {
+      isEdit.value = true
+      form.value = {
+        nome_longo: instituicao.nome_longo,
+        nome_curto: instituicao.nome_curto,
+      }
+    }
+  }
 })
 
 watch(() => props.instituicao, (newInstituicao) => {
@@ -73,6 +90,7 @@ watch(() => props.instituicao, (newInstituicao) => {
 }, { immediate: true })
 
 const submitForm = () => {
+  console.log('Enviando formulário:', form.value)
   emit('submit', form.value)
 }
 </script>

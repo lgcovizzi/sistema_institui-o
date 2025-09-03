@@ -4,6 +4,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: laravel_backend
+    ports:
+      - "8001:8000"
     volumes:
       - ./backend:/var/www/html
     depends_on:
@@ -46,18 +48,7 @@ services:
     networks:
       - sistema-network
 
-  nginx:
-    image: nginx:alpine
-    container_name: nginx_server
-    ports:
-      - "8000:80"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./backend:/var/www/html
-    depends_on:
-      - backend
-    networks:
-      - sistema-network
+
 
 volumes:
   mariadb_data:

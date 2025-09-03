@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.2-cli
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -28,5 +28,10 @@ COPY . /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+RUN chmod -R 755 /var/www/html/storage
+
+# Expose port 8000
+EXPOSE 8000
+
+# Start Laravel development server
+CMD php artisan serve --host=0.0.0.0 --port=8000

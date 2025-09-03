@@ -26,37 +26,84 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useInstituicaoStore } from '@/stores/instituicao';
 import { useEnderecoStore } from '@/stores/endereco';
-import type { Departamento, Endereco } from '@/types';
+import { useDepartamentoStore } from '@/stores/departamento';
+import type { Departamento } from '@/types';
+
+const props = defineProps<{
+  departamento?: Departamento
+  loading?: boolean
+  editId?: number | null
+}>()
+
+const emit = defineEmits<{
+  submit: [data: Partial<Departamento>]
+  cancel: []
+}>()
 
 const instituicaoStore = useInstituicaoStore();
 const enderecoStore = useEnderecoStore();
-const { instituicoes } = instituicaoStore;
-const { enderecos } = enderecoStore;
+const departamentoStore = useDepartamentoStore();
 
 const selectedInstituicao = ref<number | null>(null);
+const departamento = ref<Partial<Departamento>>({
+  endereco_id: null,
+  nome: '',
+  instituicao_id: null
+});
 
-onMounted(() => {
-  instituicaoStore.fetchInstituicoes();
+const { instituicoes } = storeToRefs(instituicaoStore);
+const { enderecos } = storeToRefs(enderecoStore);
+
+onMounted(async () => {
+  await instituicaoStore.fetchInstituicoes();
+  
+  if (props.editId) {
+    await departamentoStore.fetchDepartamentos();
+    const departamentoData = departamentoStore.departamentos.find(d => d.id === props.editId);
+    if (departamentoData) {
+      departamento.value = {
+        instituicao_id: departamentoData.instituicao_id,
+        endereco_id: departamentoData.endereco_id,
+        nome: departamentoData.nome
+      };
+      selectedInstituicao.value = departamentoData.instituicao_id;
+      await enderecoStore.fetchEnderecos(departamentoData.instituicao_id);
+    }
+  }
 });
 
 watch(selectedInstituicao, (newVal) => {
   if (newVal) {
+    departamento.value.instituicao_id = newVal;
     enderecoStore.fetchEnderecos(newVal);
   }
 });
 
-const departamento = ref<Partial<Departamento>>({
-  endereco_id: null,
-  nome: ''
+watch(() => props.editId, async (newEditId) => {
+  if (newEditId) {
+    await departamentoStore.fetchDepartamentos();
+    const departamentoData = departamentoStore.departamentos.find(d => d.id === newEditId);
+    if (departamentoData) {
+      departamento.value = {
+        instituicao_id: departamentoData.instituicao_id,
+        endereco_id: departamentoData.endereco_id,
+        nome: departamentoData.nome
+      };
+      selectedInstituicao.value = departamentoData.instituicao_id;
+      await enderecoStore.fetchEnderecos(departamentoData.instituicao_id);
+    }
+  } else {
+    departamento.value = {
+      endereco_id: null,
+      nome: '',
+      instituicao_id: null
+    };
+    selectedInstituicao.value = null;
+  }
 });
-
-const emit = defineEmits(['submit']);
-
-const submitForm = () => {
-  emit('submit', departamento.value);
-};
 </script>
 
 <style scoped>

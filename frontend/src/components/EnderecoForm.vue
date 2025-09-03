@@ -25,16 +25,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useInstituicaoStore } from '@/stores/instituicao';
+import { useEnderecoStore } from '@/stores/endereco';
 import type { Endereco } from '@/types';
 
-const instituicaoStore = useInstituicaoStore();
-const { instituicoes } = instituicaoStore;
+const props = defineProps<{
+  endereco?: Endereco
+  loading?: boolean
+  editId?: number | null
+}>()
 
-onMounted(() => {
-  instituicaoStore.fetchInstituicoes();
-});
+const emit = defineEmits<{
+  submit: [data: Partial<Endereco>]
+  cancel: []
+}>()
+
+const instituicaoStore = useInstituicaoStore();
+const enderecoStore = useEnderecoStore();
 
 const endereco = ref<Partial<Endereco>>({
   instituicao_id: null,
@@ -43,11 +51,48 @@ const endereco = ref<Partial<Endereco>>({
   estado: ''
 });
 
-const emit = defineEmits(['submit']);
+const { instituicoes } = storeToRefs(instituicaoStore);
 
-const submitForm = () => {
-  emit('submit', endereco.value);
-};
+onMounted(async () => {
+  await instituicaoStore.fetchInstituicoes();
+  
+  if (props.editId) {
+    await enderecoStore.fetchEnderecos();
+    const enderecoData = enderecoStore.enderecos.find(e => e.id === props.editId);
+    if (enderecoData) {
+      endereco.value = {
+        instituicao_id: enderecoData.instituicao_id,
+        titulo: enderecoData.titulo,
+        cidade: enderecoData.cidade,
+        estado: enderecoData.estado
+      };
+    }
+  }
+});
+
+watch(() => props.editId, async (newEditId) => {
+  if (newEditId) {
+    await enderecoStore.fetchEnderecos();
+    const enderecoData = enderecoStore.enderecos.find(e => e.id === newEditId);
+    if (enderecoData) {
+      endereco.value = {
+        instituicao_id: enderecoData.instituicao_id,
+        titulo: enderecoData.titulo,
+        cidade: enderecoData.cidade,
+        estado: enderecoData.estado
+      };
+    }
+  } else {
+    endereco.value = {
+      instituicao_id: null,
+      titulo: '',
+      cidade: '',
+      estado: ''
+    };
+  }
+});
+
+import { storeToRefs } from 'pinia';
 </script>
 
 <style scoped>
